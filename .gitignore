@@ -1,2 +1,4 @@
 test_data/**.csv
 venv
+
+**/__pycache__/
