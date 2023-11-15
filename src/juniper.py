@@ -16,69 +16,90 @@ def csv_to_json(file):
 # Google geocode the site address.
 # Note: The Google Maps Web Services Client Libraries could also be used, rather than directly calling the REST APIs.
 # Documentation: https://developers.google.com/maps/documentation/geocoding/client-library
-def geocode(address, google_api_key, show_more_details):
-    if address is None or address == '':
-        return (False, 'Missing site address')
+# def geocode(address, google_api_key, show_more_details):
+#     if address is None or address == '':
+#         return (False, 'Missing site address')
 
-    try:
-        # Establish Google session
-        google = Google(google_api_key)
+#     try:
+#         # Establish Google session
+#         google = Google(google_api_key)
 
-        # Call the Google Geocoding API: https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={google_api_key}
-        # Documentation: https://developers.google.com/maps/documentation/geocoding/intro
-        print('Calling the Google Geocoding API...')
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}'.format(address.replace(' ', '+'))
-        result = google.get(url)
-        if result == False:
-            return (False, 'Failed to get Geocoding')
+#         # Call the Google Geocoding API: https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={google_api_key}
+#         # Documentation: https://developers.google.com/maps/documentation/geocoding/intro
+#         print('Calling the Google Geocoding API...')
+#         url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}'.format(address.replace(' ', '+'))
+#         result = google.get(url)
+#         if result == False:
+#             return (False, 'Failed to get Geocoding')
 
-        if show_more_details:
-            print('\nRetrieving the JSON response object...')
-            print(json.dumps(result, sort_keys=True, indent=4))
+#         if show_more_details:
+#             print('\nRetrieving the JSON response object...')
+#             print(json.dumps(result, sort_keys=True, indent=4))
 
-        gaddr = result['results'][0]
-        if show_more_details:
-            print('\nRetrieving the results[0] object...')
-            print(json.dumps(gaddr, sort_keys=True, indent=4))
+#         gaddr = result['results'][0]
+#         if show_more_details:
+#             print('\nRetrieving the results[0] object...')
+#             print(json.dumps(gaddr, sort_keys=True, indent=4))
 
-        location = gaddr['geometry']['location']
-        if show_more_details:
-            print('\nRetrieving the geometry.location object...')
-            print(json.dumps(location, sort_keys=True, indent=4))
-            print('\nUsing lat and lng in the Google Time Zone API request')
+#         location = gaddr['geometry']['location']
+#         if show_more_details:
+#             print('\nRetrieving the geometry.location object...')
+#             print(json.dumps(location, sort_keys=True, indent=4))
+#             print('\nUsing lat and lng in the Google Time Zone API request')
 
-        print()
+#         print()
 
-        # Call the Google Time Zone API: https://maps.googleapis.com/maps/api/timezone/json?location={lat},{lng}&timestamp={timestamp}&key={google_api_key}
-        # Documentation: https://developers.google.com/maps/documentation/timezone/start
-        print('Calling the Google Time Zone API...')
-        url = 'https://maps.googleapis.com/maps/api/timezone/json?location={},{}&timestamp={}'.format(location['lat'], location['lng'], int(time.time()))
-        result = google.get(url)
-        if result == False:
-            return (False, 'Failed to get Time Zone')
+#         # Call the Google Time Zone API: https://maps.googleapis.com/maps/api/timezone/json?location={lat},{lng}&timestamp={timestamp}&key={google_api_key}
+#         # Documentation: https://developers.google.com/maps/documentation/timezone/start
+#         print('Calling the Google Time Zone API...')
+#         url = 'https://maps.googleapis.com/maps/api/timezone/json?location={},{}&timestamp={}'.format(location['lat'], location['lng'], int(time.time()))
+#         result = google.get(url)
+#         if result == False:
+#             return (False, 'Failed to get Time Zone')
 
-        gtz = result
-        if show_more_details:
-            print('\nRetrieving the JSON response object...')
-            print(json.dumps(result, sort_keys=True, indent=4))
+#         gtz = result
+#         if show_more_details:
+#             print('\nRetrieving the JSON response object...')
+#             print(json.dumps(result, sort_keys=True, indent=4))
 
-        print()
-    except Exception as e:
-        return (False, str(e))
+#         print()
+#     except Exception as e:
+#         return (False, str(e))
 
-    results = {
-        'address':
-            gaddr['formatted_address'],
-        'latlng': {
-            'lat': location['lat'],
-            'lng': location['lng'],
-        },
-        'country_code': [ x['short_name'] for x in gaddr['address_components'] if 'country' in x['types'] ][0],
-        'timezone':
-            gtz['timeZoneId']
-    }
+#     results = {
+#         'address':
+#             gaddr['formatted_address'],
+#         'latlng': {
+#             'lat': location['lat'],
+#             'lng': location['lng'],
+#         },
+#         'country_code': [ x['short_name'] for x in gaddr['address_components'] if 'country' in x['types'] ][0],
+#         'timezone':
+#             gtz['timeZoneId']
+#     }
 
-    return (True, results)
+#     return (True, results)
+
+
+def geocode(address):
+    geolocator = Nominatim(user_agent="geocoder_example")
+    location = geolocator.geocode(address)
+
+    if location:
+        latitude, longitude = location.latitude, location.longitude
+        return latitude, longitude
+    else:
+        return None
+
+# Example usage:
+address = "24 bown close, tilbury RM18 8EH"
+result = geocode(address)
+
+if result:
+    print(f"Latitude: {result[0]}, Longitude: {result[1]}")
+else:
+    print("Geocoding failed for the given address.")
+
 
 
 # Google CRUD operations
