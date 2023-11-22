@@ -210,7 +210,18 @@ def juniper_script(file,
           }
         }
         '''
-        site_setting = {}
+        # MOJ specific attributes
+        site_setting = {
+
+            "vars": {
+                "Enable GovWifi": d.get('Enable GovWifi', ''), #Not exported from NACS
+                "Enable MoJWifi": d.get('Enable MoJWifi', ''), #Not exported from NACS
+                "Weird NACS Radius Key": d.get('Shared Secret', ''),
+                "GovWifi Radius Key": "WHERE DO I GET THIS?"
+
+            }
+
+        }
 
         # # Create Site
         # (geocoded, geocoding) = geocode(d.get('Site Address', ''), google_api_key, show_more_details)
