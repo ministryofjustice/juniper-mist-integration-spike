@@ -1,3 +1,6 @@
+# Notice of deprecation: 
+Spike work for this project has now been complete. Find the production ready version of this project [here](https://github.com/ministryofjustice/juniper-mist-integration).
+
 # Automated Juniper MIST integration 
 
 This repo has been created as part of some spike work to automate the creation of Juniper Mist sites.
